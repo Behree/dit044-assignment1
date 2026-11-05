@@ -4,19 +4,23 @@ import java.awt.*; //main to be added
 //Car preserve all the shared features of both cars.
 //Combined all the shared features into one file.
 public abstract class Car implements Movable {
-    public int nrDoors;
-    public double enginePower;
-    public double currentSpeed;
-    public Color color;
-    public String modelName;
+    private int nrDoors;
+    private double enginePower;
+    private double currentSpeed;
+    private Color color;
+    private String modelName;
 
-
-    // Position on 2D plane
     private double x;
     private double y;
-    // Direction representation:
     private int direction; // 0 = UP, 1 = RIGHT, 2 = DOWN, 3 = LEFT
 
+    public Car(int nrDoors, double enginePower, double currentSpeed, Color color, String modelName) {
+        this.nrDoors = nrDoors;
+        this.enginePower = enginePower;
+        this.currentSpeed = currentSpeed;
+        this.color = color;
+        this.modelName = modelName;
+    }
 
     public int getNrDoors() {
         return nrDoors;
@@ -45,12 +49,10 @@ public abstract class Car implements Movable {
     public void stopEngine() {
         currentSpeed = 0;
     }
-
-    public void incrementSpeed(double amount) {
+    private void incrementSpeed(double amount) {
         currentSpeed = getCurrentSpeed() + speedFactor() * amount; //TODO SpeedFactor
     }
-
-    public void decrementSpeed(double amount) {
+    private void decrementSpeed(double amount) {
         currentSpeed = getCurrentSpeed() - speedFactor() * amount; //TODO SpeedFactor
     }
 
