@@ -30,8 +30,10 @@ public class CarTest {
 
     public static void testStopEngine() {
         Saab95 saab = new Saab95();
+        saab.startEngine();
+        double speedBeforeStopping = saab.getCurrentSpeed();
         saab.stopEngine();
-        boolean results = saab.getCurrentSpeed() == 0;
+        boolean results = speedBeforeStopping > 0 && saab.getCurrentSpeed() == 0;
         reportResult( "Speed at stopping engine", results);
     }
 
@@ -61,6 +63,116 @@ public class CarTest {
 
     }
 
+    // Position calculations can have tiny floating-point rounding differences.
+    private static boolean closeTo(double actual, double expected) {
+        return Math.abs(actual - expected) < 0.000000001;
+    }
+
+    private static void testMoveUp() {
+        Volvo240 volvo = new Volvo240();
+        volvo.startEngine();
+        volvo.gas(0.5);
+        double speed = volvo.getCurrentSpeed();
+        double xBefore = volvo.getX();
+        double yBefore = volvo.getY();
+
+        volvo.move();
+
+        boolean result = speed > 0
+                && closeTo(volvo.getX(), xBefore)
+                && closeTo(volvo.getY(), yBefore + speed);
+        reportResult("Moving up increases y by current speed", result);
+    }
+
+    private static void testMoveRight() {
+        Saab95 saab = new Saab95();
+        saab.startEngine();
+        saab.gas(0.5);
+        double speed = saab.getCurrentSpeed();
+        double xBefore = saab.getX();
+        double yBefore = saab.getY();
+
+        saab.turnRight();
+        saab.move();
+
+        boolean result = speed > 0
+                && closeTo(saab.getX(), xBefore + speed)
+                && closeTo(saab.getY(), yBefore);
+        reportResult("Turning right makes movement increase x", result);
+    }
+
+    private static void testMoveDown() {
+        Volvo240 volvo = new Volvo240();
+        volvo.startEngine();
+        volvo.gas(0.5);
+        double speed = volvo.getCurrentSpeed();
+        double xBefore = volvo.getX();
+        double yBefore = volvo.getY();
+
+        volvo.turnRight();
+        volvo.turnRight();
+        volvo.move();
+
+        boolean result = speed > 0
+                && closeTo(volvo.getX(), xBefore)
+                && closeTo(volvo.getY(), yBefore - speed);
+        reportResult("Two right turns make movement decrease y", result);
+    }
+
+    private static void testMoveLeft() {
+        Saab95 saab = new Saab95();
+        saab.startEngine();
+        saab.gas(0.5);
+        double speed = saab.getCurrentSpeed();
+        double xBefore = saab.getX();
+        double yBefore = saab.getY();
+
+        saab.turnLeft();
+        saab.move();
+
+        boolean result = speed > 0
+                && closeTo(saab.getX(), xBefore - speed)
+                && closeTo(saab.getY(), yBefore);
+        reportResult("Turning left makes movement decrease x", result);
+    }
+
+    private static void testFullRotation() {
+        Volvo240 volvo = new Volvo240();
+        Saab95 saab = new Saab95();
+        int volvoDirection = volvo.getDirection();
+        int saabDirection = saab.getDirection();
+
+        volvo.turnRight();
+        saab.turnLeft();
+        boolean directionsChanged = volvo.getDirection() != volvoDirection
+                && saab.getDirection() != saabDirection;
+        for (int turn = 0; turn < 3; turn++) {
+            volvo.turnRight();
+            saab.turnLeft();
+        }
+
+        boolean result = directionsChanged
+                && volvo.getDirection() == volvoDirection
+                && saab.getDirection() == saabDirection;
+        reportResult("Four turns restore the original directions", result);
+    }
+
+    private static void testStoppedCarDoesNotMove() {
+        Volvo240 volvo = new Volvo240();
+        volvo.startEngine();
+        volvo.move();
+        double xBeforeStopping = volvo.getX();
+        double yBeforeStopping = volvo.getY();
+
+        volvo.stopEngine();
+        volvo.move();
+
+        boolean result = closeTo(volvo.getCurrentSpeed(), 0)
+                && closeTo(volvo.getX(), xBeforeStopping)
+                && closeTo(volvo.getY(), yBeforeStopping);
+        reportResult("A stopped car stays at its current position", result);
+    }
+
     static void main() {
         testTurbo();
         testStartEngine();
@@ -69,6 +181,12 @@ public class CarTest {
         testnrDoorsVolvo240();
         testColorVolvo240();
         testColorSaab95();
+        testMoveUp();
+        testMoveRight();
+        testMoveDown();
+        testMoveLeft();
+        testFullRotation();
+        testStoppedCarDoesNotMove();
 
     }
 }
