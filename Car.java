@@ -1,7 +1,7 @@
-import java.awt.*; //main to be added
+import java.awt.*;
 
 //Car is the dad and has two children Volvo240 and Saab95.
-//Car preserve all the shared features of both cars.
+//Car preserves all the shared features of both cars.
 //Combined all the shared features into one file.
 public abstract class Car implements Movable {
     private int nrDoors;
@@ -9,6 +9,7 @@ public abstract class Car implements Movable {
     private double currentSpeed;
     private Color color;
     private String modelName;
+
 
     private double x;
     private double y;
@@ -56,11 +57,21 @@ public abstract class Car implements Movable {
         currentSpeed = getCurrentSpeed() - speedFactor() * amount; //TODO SpeedFactor
     }
 
+    // JOUD: Increases speed. Only accepts amounts in [0,1];
+    // JOUD: Anything else throws IllegalArgumentException (Task 4).
     public void gas(double amount) {
+        if ( amount < 0 || amount > 1) {
+            throw new IllegalArgumentException("amount must be a number between 0 and 1");
+        }
         incrementSpeed(amount);
     }
 
+    // JOUD: Decreases speed. only accepts amounts in [0,1];
+    // JOUD: A negative amount would otherwise increase speed (Task 4).
     public void brake(double amount) {
+        if ( amount < 0 || amount > 1) {
+            throw new IllegalArgumentException("amount must be a number between 0 and 1");
+        }
         decrementSpeed(amount);
     }
 

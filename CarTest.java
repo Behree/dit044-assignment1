@@ -173,6 +173,46 @@ public class CarTest {
         reportResult("A stopped car stays at its current position", result);
     }
 
+    // JOUD: Tests that gas() throws an exception for an amount above 1.
+    private static void testGasRejectsTooLarge() {
+        Volvo240 volvo = new Volvo240();
+        boolean rejected = false;
+        try {
+            volvo.gas(5);
+
+        } catch (IllegalArgumentException e) {
+            rejected = true;
+        }
+        reportResult("Gas rejects amount above 1", rejected);
+    }
+
+    // JOUD: Tests that brake() throws an exception for an amount above 1.
+    private static void testBrakeRejectsTooLarge() {
+        Volvo240 volvo = new Volvo240();
+        boolean rejected = false;
+        try {
+            volvo.brake(5);
+
+        } catch (IllegalArgumentException e) {
+            rejected = true;
+        }
+        reportResult("Brake rejects amount above 1", rejected);
+    }
+
+    /* JOUD: Tests that gas() throws an exception for a negative amount;
+        since braking with a negative amount would increase speed.*/
+        private static void testBrakeRejectsNegative() {
+            Volvo240 volvo = new Volvo240();
+            boolean rejected = false;
+            try {
+                volvo.brake(-1);
+
+            } catch (IllegalArgumentException e) {
+                rejected = true;
+            }
+            reportResult("Brake rejects negative amount", rejected);
+    }
+
     static void main() {
         testTurbo();
         testStartEngine();
@@ -187,6 +227,8 @@ public class CarTest {
         testMoveLeft();
         testFullRotation();
         testStoppedCarDoesNotMove();
-
+        testGasRejectsTooLarge();  // JOUD: Task 4: sanity checks for brake().
+        testBrakeRejectsNegative(); // JOUD: Task 4: sanity checks for brake().
+        testBrakeRejectsTooLarge(); // JOUD: Task 4: sanity checks for brake().
     }
 }
